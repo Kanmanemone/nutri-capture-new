@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,8 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -36,6 +37,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NutricapturenewTheme {
+                // Navigation 관리의 주체
+                val navController = rememberNavController()
+
                 // Snackbar를 위한 CoroutineScope와 State
                 val scope = rememberCoroutineScope()
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -67,15 +71,30 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    SampleContent(
-                        text = "Sample Content",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                            .background(Color.LightGray),
-                        scope = scope,
-                        snackbarHostState = snackbarHostState
-                    )
+                    NavHost(
+                        navController = navController,
+                        startDestination = "nutrientInputScreen",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable(route = "nutrientInputScreen") {
+                            NutrientInputScreen(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState
+                            )
+                        }
+                        composable(route = "statisticsScreen") {
+                            StatisticsScreen(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState
+                            )
+                        }
+                        composable(route = "userInfoScreen") {
+                            UserInfoScreen(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -86,8 +105,8 @@ class MainActivity : ComponentActivity() {
 fun SampleContent(
     text: String,
     modifier: Modifier = Modifier,
-    scope: CoroutineScope = rememberCoroutineScope(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
 ) {
     Box(
         modifier = modifier
