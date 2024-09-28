@@ -7,9 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -22,7 +26,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -52,9 +61,7 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        BottomAppBar(
-                            content = { Text("Sample Bottom Bar Text") }
-                        )
+                        MainNavigationBar(navController)
                     },
                     snackbarHost = {
                         SnackbarHost(
@@ -73,22 +80,22 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "nutrientInputScreen",
+                        startDestination = Destination.NutrientInputScreen.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(route = "nutrientInputScreen") {
+                        composable(route = Destination.NutrientInputScreen.route) {
                             NutrientInputScreen(
                                 scope = scope,
                                 snackbarHostState = snackbarHostState
                             )
                         }
-                        composable(route = "statisticsScreen") {
+                        composable(route = Destination.StatisticsScreen.route) {
                             StatisticsScreen(
                                 scope = scope,
                                 snackbarHostState = snackbarHostState
                             )
                         }
-                        composable(route = "userInfoScreen") {
+                        composable(route = Destination.UserInfoScreen.route) {
                             UserInfoScreen(
                                 scope = scope,
                                 snackbarHostState = snackbarHostState
@@ -99,6 +106,46 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    @Composable
+    private fun MainNavigationBar(navController: NavHostController) {
+        val items = listOf(
+            Destination.NutrientInputScreen,
+            Destination.StatisticsScreen,
+            Destination.UserInfoScreen
+        )
+
+        NavigationBar {
+            val currentRoute = navController.currentDestination?.route
+
+            items.forEach { item ->
+                NavigationBarItem(
+                    selected = (item.route == currentRoute),
+                    onClick = {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            painterResource(id = item.iconId),
+                            contentDescription = item.title
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+sealed class Destination(val route: String, val title: String, val iconId: Int) {
+    data object NutrientInputScreen : Destination("nutrientInputScreen", "캡처", R.drawable.pan_tool_alt)
+    data object StatisticsScreen : Destination("statisticsScreen", "통계", R.drawable.stacked_line_chart)
+    data object UserInfoScreen : Destination("userInfoScreen", "내 정보", R.drawable.manage_accounts)
 }
 
 @Composable
