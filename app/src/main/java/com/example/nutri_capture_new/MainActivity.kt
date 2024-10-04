@@ -7,8 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,15 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.nutri_capture_new.nutrient.NutrientScreen
 import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -80,11 +77,11 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Destination.NutrientInputScreen.route,
+                        startDestination = Destination.NutrientScreen.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(route = Destination.NutrientInputScreen.route) {
-                            NutrientInputScreen(
+                        composable(route = Destination.NutrientScreen.route) {
+                            NutrientScreen(
                                 scope = scope,
                                 snackbarHostState = snackbarHostState
                             )
@@ -110,7 +107,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun MainNavigationBar(navController: NavHostController) {
         val items = listOf(
-            Destination.NutrientInputScreen,
+            Destination.NutrientScreen,
             Destination.StatisticsScreen,
             Destination.UserInfoScreen
         )
@@ -143,7 +140,7 @@ class MainActivity : ComponentActivity() {
 }
 
 sealed class Destination(val route: String, val title: String, val iconId: Int) {
-    data object NutrientInputScreen : Destination("nutrientInputScreen", "캡처", R.drawable.pan_tool_alt)
+    data object NutrientScreen : Destination("nutrientScreen", "캡처", R.drawable.pan_tool_alt)
     data object StatisticsScreen : Destination("statisticsScreen", "통계", R.drawable.stacked_line_chart)
     data object UserInfoScreen : Destination("userInfoScreen", "내 정보", R.drawable.manage_accounts)
 }

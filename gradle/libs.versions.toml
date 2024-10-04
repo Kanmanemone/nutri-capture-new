@@ -12,6 +12,7 @@ navigationRuntimeKtx = "2.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
