@@ -19,21 +19,31 @@ class NutrientViewModel : ViewModel() {
     val nutrientScreenState: State<NutrientScreenState>
         get() = _nutrientScreenState
 
-    // (2) View에서 받아 처리할 이벤트
+    // (2) ViewModel용 내부 변수
+    private val _isInitialized = mutableStateOf(false)
+    val isInitialized: State<Boolean>
+        get() = _isInitialized
+
+    // (3) View에서 받아 처리할 이벤트
     private val _nutrientScreenEventFlow = MutableSharedFlow<NutrientScreenEvent>()
     val nutrientScreenEventFlow: SharedFlow<NutrientScreenEvent>
         get() = _nutrientScreenEventFlow.asSharedFlow()
 
-    // (3) View로부터 받은 이벤트 처리
+    // (4) View로부터 받은 이벤트 처리
     fun onEvent(event: NutrientViewModelEvent) {
         when (event) {
             is NutrientViewModelEvent.InitializeState -> {
-                _nutrientScreenState.value.dailyMeals.add(
-                    DailyMeal(
-                        date = LocalDate.now(),
-                        meals = SnapshotStateList()
+                var dateToInsert = LocalDate.now()
+                repeat(20) {
+                    _nutrientScreenState.value.dailyMeals.add(
+                        DailyMeal(
+                            date = dateToInsert,
+                            meals = SnapshotStateList()
+                        )
                     )
-                )
+                    dateToInsert = dateToInsert.plusDays(1)
+                }
+                _isInitialized.value = true
             }
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDate -> {

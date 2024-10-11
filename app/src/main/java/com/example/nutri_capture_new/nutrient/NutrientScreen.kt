@@ -33,23 +33,23 @@ fun NutrientScreen(
         viewModel.onEvent(NutrientViewModelEvent.InitializeState)
 
         // ViewModel로부터 받은 이벤트 처리
-        launch {
-            viewModel.nutrientScreenEventFlow.collectLatest { event ->
-                when (event) {
-                    is NutrientScreenEvent.ShowSnackbar -> {
-                        scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = event.message,
-                                duration = SnackbarDuration.Short
-                            )
-                        }
+        viewModel.nutrientScreenEventFlow.collectLatest { event ->
+            when (event) {
+                is NutrientScreenEvent.ShowSnackbar -> {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = event.message,
+                            duration = SnackbarDuration.Short
+                        )
                     }
                 }
             }
         }
+    }
 
-        // 무한 스크롤
-        launch {
+    LaunchedEffect(key1 = viewModel.isInitialized.value) {
+        if(viewModel.isInitialized.value) {
+            // 무한 스크롤
             snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItemsInfo ->
                 val totalMaxIndex = listState.layoutInfo.totalItemsCount - 1
                 val firstVisibleItemIndex = listState.firstVisibleItemIndex
