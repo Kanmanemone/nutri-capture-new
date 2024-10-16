@@ -1,11 +1,11 @@
 package com.example.nutri_capture_new.nutrient
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -46,7 +46,11 @@ class NutrientViewModel : ViewModel() {
                     )
                     dateToInsert = dateToInsert.plusDays(1)
                 }
-                _isInitialized.value = true
+
+                viewModelScope.launch {
+                    delay(100)
+                    _isInitialized.value = true
+                }
             }
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDate -> {
@@ -60,7 +64,6 @@ class NutrientViewModel : ViewModel() {
             }
 
             is NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate -> {
-                Log.i("interfacer_han", "(이벤트 LoadMoreItemsBeforeFirstDate) 시작 (아이템 갯수: ${_nutrientScreenState.value.dailyMeals.size})")
                 val firstDate = _nutrientScreenState.value.dailyMeals.first().date
                 _nutrientScreenState.value.dailyMeals.add(
                     0,
@@ -69,11 +72,9 @@ class NutrientViewModel : ViewModel() {
                         meals = SnapshotStateList()
                     )
                 )
-                Log.i("interfacer_han", "(이벤트 LoadMoreItemsBeforeFirstDate) 끝 (아이템 갯수: ${_nutrientScreenState.value.dailyMeals.size})")
 
                 viewModelScope.launch {
-                    Log.i("interfacer_han", "(이벤트 ScrollToItem) 호출")
-                    _nutrientScreenEventFlow.emit(NutrientScreenEvent.ScrollToItem(1))
+                    _nutrientScreenEventFlow.emit(NutrientScreenEvent.RequestScrollToItem(1))
                 }
             }
         }

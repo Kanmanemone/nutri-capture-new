@@ -1,6 +1,5 @@
 package com.example.nutri_capture_new.nutrient
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,10 +43,8 @@ fun NutrientScreen(
                     }
                 }
 
-                is NutrientScreenEvent.ScrollToItem -> {
-                    Log.i("interfacer_han", "(이벤트 ScrollToItem) 시작 (아이템 갯수: ${viewModel.nutrientScreenState.value.dailyMeals.size})")
-                    listState.scrollToItem(event.index)
-                    Log.i("interfacer_han", "(이벤트 ScrollToItem) 끝 (아이템 갯수: ${viewModel.nutrientScreenState.value.dailyMeals.size})")
+                is NutrientScreenEvent.RequestScrollToItem -> {
+                    listState.requestScrollToItem(event.index, listState.firstVisibleItemScrollOffset)
                 }
             }
         }
@@ -66,7 +63,6 @@ fun NutrientScreen(
                 }
 
                 if(firstVisibleItemIndex == 0) {
-                    Log.i("interfacer_han", "(이벤트 LoadMoreItemsBeforeFirstDate) 호출")
                     viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate)
                 }
             }
@@ -80,7 +76,6 @@ fun NutrientScreen(
             .background(Color.DarkGray)
     ) {
         val dailyMeals = viewModel.nutrientScreenState.value.dailyMeals
-        Log.i("interfacer_han", "(LazyColumn Recomposition) 아이템 갯수: ${dailyMeals.size}")
         items(dailyMeals) { dailyMeal ->
             Text(
                 text = dailyMeal.date.toString(),
