@@ -42,10 +42,6 @@ fun NutrientScreen(
                         )
                     }
                 }
-
-                is NutrientScreenEvent.RequestScrollToItem -> {
-                    listState.requestScrollToItem(event.index, listState.firstVisibleItemScrollOffset)
-                }
             }
         }
     }
@@ -64,6 +60,8 @@ fun NutrientScreen(
 
                 if(firstVisibleItemIndex == 0) {
                     viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate)
+                    // 역방향 무한 스크롤 구현을 위한 암시적 스크롤
+                    listState.requestScrollToItem(1, listState.firstVisibleItemScrollOffset)
                 }
             }
         }

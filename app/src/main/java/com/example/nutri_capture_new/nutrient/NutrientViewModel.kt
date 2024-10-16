@@ -47,10 +47,7 @@ class NutrientViewModel : ViewModel() {
                     dateToInsert = dateToInsert.plusDays(1)
                 }
 
-                viewModelScope.launch {
-                    delay(100)
-                    _isInitialized.value = true
-                }
+                _isInitialized.value = true
             }
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDate -> {
@@ -72,10 +69,6 @@ class NutrientViewModel : ViewModel() {
                         meals = SnapshotStateList()
                     )
                 )
-
-                viewModelScope.launch {
-                    _nutrientScreenEventFlow.emit(NutrientScreenEvent.RequestScrollToItem(1))
-                }
             }
         }
     }
