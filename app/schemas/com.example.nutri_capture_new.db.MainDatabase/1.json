@@ -1,0 +1,152 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "96ec450cfef6c18e454fa3cb0da94e11",
+    "entities": [
+      {
+        "tableName": "day_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`day_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `day_date` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "dayId",
+            "columnName": "day_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "day_date",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "day_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_day_table_day_date",
+            "unique": true,
+            "columnNames": [
+              "day_date"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_day_table_day_date` ON `${TABLE_NAME}` (`day_date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "meal_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`meal_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `day_id` INTEGER NOT NULL, `meal_time` TEXT NOT NULL, `meal_name` TEXT NOT NULL, `overeating_excess` INTEGER NOT NULL, `refined_sugar_excess` INTEGER NOT NULL, `refined_grain_excess` INTEGER NOT NULL, `flour_excess` INTEGER NOT NULL, `fiber_quality` INTEGER NOT NULL, `protein_quality` INTEGER NOT NULL, `sodium_excess` INTEGER NOT NULL, FOREIGN KEY(`day_id`) REFERENCES `day_table`(`day_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "mealId",
+            "columnName": "meal_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dayId",
+            "columnName": "day_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "meal_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "meal_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.overeatingExcess",
+            "columnName": "overeating_excess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.refinedSugarExcess",
+            "columnName": "refined_sugar_excess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.refinedGrainExcess",
+            "columnName": "refined_grain_excess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.flourExcess",
+            "columnName": "flour_excess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.fiberQuality",
+            "columnName": "fiber_quality",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.proteinQuality",
+            "columnName": "protein_quality",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nutritionInfo.sodiumExcess",
+            "columnName": "sodium_excess",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "meal_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_meal_table_day_id",
+            "unique": false,
+            "columnNames": [
+              "day_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_table_day_id` ON `${TABLE_NAME}` (`day_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "day_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "day_id"
+            ],
+            "referencedColumns": [
+              "day_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96ec450cfef6c18e454fa3cb0da94e11')"
+    ]
+  }
+}

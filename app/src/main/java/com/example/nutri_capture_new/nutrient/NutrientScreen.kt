@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 fun NutrientScreen(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    viewModel: NutrientViewModel = viewModel<NutrientViewModel>(),
+    viewModel: NutrientViewModel,
     listState: LazyListState = rememberLazyListState()
 ) {
     LaunchedEffect(key1 = true) {
@@ -79,7 +79,7 @@ fun NutrientScreen(
         state = listState,
         modifier = Modifier.fillMaxSize()
     ) {
-        val dailyMeals = viewModel.nutrientScreenState.value.dailyMeals
+        val dailyMeals = viewModel.nutrientScreenState.value.listOfDateAndMeals
         items(dailyMeals) { dailyMeal ->
             Card(
                 modifier = Modifier

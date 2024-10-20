@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // KSP (어노테이션 읽기용)
+    id("com.google.devtools.ksp")
+    // Room Gradle 플러그인
+    id("androidx.room")
 }
 
 android {
@@ -47,6 +51,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    // Room Gradle 플러그인
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -73,4 +81,11 @@ dependencies {
 
     // ViewModel (Compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Room
+    implementation (libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
+
+    // KSP (어노테이션 읽기용)
+    ksp(libs.androidx.room.compiler)
 }

@@ -3,20 +3,22 @@ package com.example.nutri_capture_new.nutrient
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.example.nutri_capture_new.db.Day
+import com.example.nutri_capture_new.db.MainDAO
+import com.example.nutri_capture_new.db.MainDatabase
+import com.example.nutri_capture_new.db.MainRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class NutrientViewModel : ViewModel() {
+class NutrientViewModel(val repository: MainRepository) : ViewModel() {
     // (1) 화면 표시용 State
     private val _nutrientScreenState = mutableStateOf(
         NutrientScreenState(
-            dailyMeals = SnapshotStateList()
+            listOfDateAndMeals = SnapshotStateList()
         )
     )
     val nutrientScreenState: State<NutrientScreenState>
@@ -38,8 +40,8 @@ class NutrientViewModel : ViewModel() {
             is NutrientViewModelEvent.InitializeState -> {
                 var dateToInsert = LocalDate.now()
                 repeat(20) {
-                    _nutrientScreenState.value.dailyMeals.add(
-                        DailyMeal(
+                    _nutrientScreenState.value.listOfDateAndMeals.add(
+                        DateAndMeals(
                             date = dateToInsert,
                             meals = SnapshotStateList()
                         )
@@ -51,9 +53,9 @@ class NutrientViewModel : ViewModel() {
             }
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDate -> {
-                val lastDate = _nutrientScreenState.value.dailyMeals.last().date
-                _nutrientScreenState.value.dailyMeals.add(
-                    DailyMeal(
+                val lastDate = _nutrientScreenState.value.listOfDateAndMeals.last().date
+                _nutrientScreenState.value.listOfDateAndMeals.add(
+                    DateAndMeals(
                         date = lastDate.plusDays(1),
                         meals = SnapshotStateList()
                     )
@@ -61,10 +63,10 @@ class NutrientViewModel : ViewModel() {
             }
 
             is NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate -> {
-                val firstDate = _nutrientScreenState.value.dailyMeals.first().date
-                _nutrientScreenState.value.dailyMeals.add(
+                val firstDate = _nutrientScreenState.value.listOfDateAndMeals.first().date
+                _nutrientScreenState.value.listOfDateAndMeals.add(
                     0,
-                    DailyMeal(
+                    DateAndMeals(
                         date = firstDate.minusDays(1),
                         meals = SnapshotStateList()
                     )

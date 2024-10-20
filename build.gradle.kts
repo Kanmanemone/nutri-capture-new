@@ -2,4 +2,8 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    // KSP (어노테이션 읽기용)
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
+    // Room Gradle 플러그인
+    id("androidx.room") version "2.6.1" apply false
 }
