@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutri_capture_new.SampleContent
 import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +31,7 @@ import kotlinx.coroutines.launch
 fun NutrientScreen(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    viewModel: NutrientViewModel = viewModel<NutrientViewModel>(),
+    viewModel: NutrientViewModel,
     listState: LazyListState = rememberLazyListState()
 ) {
     LaunchedEffect(key1 = true) {
@@ -79,8 +78,8 @@ fun NutrientScreen(
         state = listState,
         modifier = Modifier.fillMaxSize()
     ) {
-        val dailyMeals = viewModel.nutrientScreenState.value.dailyMeals
-        items(dailyMeals) { dailyMeal ->
+        val listOfDateAndMeals = viewModel.nutrientScreenState.value.listOfDateAndMeals
+        items(listOfDateAndMeals) { dateAndMeals ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,7 +96,7 @@ fun NutrientScreen(
                         .padding(8.dp)
                 ) {
                     Text(
-                        text = DateFormatter.formatDateForNutrientScreen(dailyMeal.date),
+                        text = DateFormatter.formatDateForNutrientScreen(dateAndMeals.date),
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 15.sp,
                         textAlign = TextAlign.End

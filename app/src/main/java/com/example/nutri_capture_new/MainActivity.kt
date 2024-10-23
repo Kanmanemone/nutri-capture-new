@@ -26,12 +26,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.nutri_capture_new.db.MainDatabase
+import com.example.nutri_capture_new.db.MainRepository
 import com.example.nutri_capture_new.nutrient.NutrientScreen
+import com.example.nutri_capture_new.nutrient.NutrientViewModelFactory
 import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -81,9 +85,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = Destination.NutrientScreen.route) {
+                            val dao = MainDatabase.getInstance(application).mainDAO
+                            val repository = MainRepository(dao)
                             NutrientScreen(
                                 scope = scope,
-                                snackbarHostState = snackbarHostState
+                                snackbarHostState = snackbarHostState,
+                                viewModel = viewModel(factory = NutrientViewModelFactory(repository))
                             )
                         }
                         composable(route = Destination.StatisticsScreen.route) {
