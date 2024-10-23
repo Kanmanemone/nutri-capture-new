@@ -1,6 +1,7 @@
 package com.example.nutri_capture_new.nutrient
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.example.nutri_capture_new.db.NutritionInfo
 import java.time.LocalDate
 import java.time.LocalTime
 
