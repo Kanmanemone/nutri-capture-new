@@ -4,10 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.nutri_capture_new.db.MainRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
@@ -70,15 +72,38 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
             }
 
             is NutrientViewModelEvent.InsertMeal -> {
-                // TODO
+                viewModelScope.launch {
+                    var insertedMealId = 0L
+                    insertedMealId = repository.insertMeal(event.meal, event.date)
+                    if (insertedMealId != 0L) {
+                        val dateAndMealsForUpdate =
+                            _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!
+                        dateAndMealsForUpdate.meals.add(event.meal)
+                    }
+                }
             }
 
             is NutrientViewModelEvent.DeleteMeal -> {
-                // TODO
+                viewModelScope.launch {
+                    var deletedRowCount = 0
+                    deletedRowCount = repository.deleteMeal(event.meal)
+                    if (deletedRowCount == 1) {
+                        val dateAndMealsForUpdate =
+                            _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!
+                        val mealForDelete =
+                            dateAndMealsForUpdate.meals.find { it.mealId == event.meal.mealId }!!
+                        dateAndMealsForUpdate.meals.remove(mealForDelete)
+                    }
+                }
             }
 
             is NutrientViewModelEvent.GetMealsByDate -> {
-                // TODO
+                viewModelScope.launch {
+                    val mealForUpdate =
+                        _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!.meals
+                    mealForUpdate.clear()
+                    mealForUpdate.addAll(repository.getMealsOrderedByTime(event.date))
+                }
             }
         }
     }

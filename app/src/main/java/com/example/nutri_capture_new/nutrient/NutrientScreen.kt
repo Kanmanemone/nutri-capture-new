@@ -3,12 +3,12 @@ package com.example.nutri_capture_new.nutrient
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.SnackbarDuration
@@ -17,15 +17,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nutri_capture_new.SampleContent
+import com.example.nutri_capture_new.db.Meal
+import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 @Composable
 fun NutrientScreen(
@@ -80,6 +83,13 @@ fun NutrientScreen(
     ) {
         val listOfDateAndMeals = viewModel.nutrientScreenState.value.listOfDateAndMeals
         items(listOfDateAndMeals) { dateAndMeals ->
+            val date = dateAndMeals.date
+            val meals = dateAndMeals.meals
+
+            LaunchedEffect(key1 = true) {
+                viewModel.onEvent(NutrientViewModelEvent.GetMealsByDate(date))
+            }
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,24 +102,41 @@ fun NutrientScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(8.dp)
                 ) {
                     Text(
-                        text = DateFormatter.formatDateForNutrientScreen(dateAndMeals.date),
+                        text = DateFormatter.formatDateForNutrientScreen(date),
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 15.sp,
                         textAlign = TextAlign.End
                     )
 
-                    SampleContent(
-                        text = "Sample 영양 정보",
+                    Button(
+                        onClick = {
+                            viewModel.onEvent(
+                                NutrientViewModelEvent.InsertMeal(
+                                    meal = Meal(
+                                        time = LocalTime.now(),
+                                        name = "자동 생성된 Meal",
+                                        nutritionInfo = NutritionInfo()
+                                    ),
+                                    date = date
+                                )
+                            )
+                        },
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        scope = scope,
-                        snackbarHostState = snackbarHostState
-                    )
+                            .align(Alignment.CenterHorizontally)
+                            .padding(
+                                top = 12.dp,
+                                bottom = 12.dp
+                            )
+                    ) {
+                        Text(
+                            text = "Meal Insert (현재: ${meals.size}개)",
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
         }
