@@ -1,5 +1,6 @@
 package com.example.nutri_capture_new.nutrient
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -105,6 +106,13 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
                     mealForUpdate.addAll(repository.getMealsOrderedByTime(event.date))
                 }
             }
+        }
+    }
+
+    // (5) DayMealView 작동 확인용 로그
+    fun log() {
+        viewModelScope.launch {
+            Log.i("interfacer_han", repository.getAllMeals().toString())
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.room.TypeConverters
         Day::class,
         Meal::class
     ],
+    views = [DayMealView::class],
     version = 1
 )
 @TypeConverters(Converters::class)

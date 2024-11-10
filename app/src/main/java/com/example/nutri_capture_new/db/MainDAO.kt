@@ -35,4 +35,7 @@ interface MainDAO {
 
     @Query("DELETE FROM day_table WHERE day_id = :dayId")
     suspend fun deleteDay(dayId: Long)
+
+    @Query("SELECT * FROM DayMealView")
+    suspend fun getAllMeals(): List<DayMealView>
 }

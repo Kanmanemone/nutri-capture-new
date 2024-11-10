@@ -29,4 +29,8 @@ class MainRepository(private val dao: MainDAO) {
     suspend fun getMealsOrderedByTime(targetDate: LocalDate): List<Meal> {
         return dao.getMealsOrderedByTime(targetDate)
     }
+
+    suspend fun getAllMeals(): List<DayMealView> {
+        return dao.getAllMeals()
+    }
 }
