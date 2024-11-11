@@ -112,7 +112,13 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
     // (5) DayMealView 작동 확인용 로그
     fun log() {
         viewModelScope.launch {
-            Log.i("interfacer_han", repository.getAllMeals().toString())
+            Log.i("interfacer_han, getAllDayMeals()", repository.getAllDayMeals().toString())
+            Log.i("interfacer_han, getNextDayMealsAfter()",
+                repository.getNextDayMealsAfter(
+                    repository.getDayMeal(6),
+                    100
+                ).toString()
+            )
         }
     }
 }

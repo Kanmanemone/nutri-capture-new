@@ -30,7 +30,17 @@ class MainRepository(private val dao: MainDAO) {
         return dao.getMealsOrderedByTime(targetDate)
     }
 
-    suspend fun getAllMeals(): List<DayMealView> {
-        return dao.getAllMeals()
+    suspend fun getAllDayMeals(): List<DayMealView> {
+        return dao.getAllDayMeals()
+    }
+
+    suspend fun getNextDayMealsAfter(lastDayMeal: DayMealView, limit: Int): List<DayMealView> {
+        return dao.getNextDayMealsAfter(
+            lastDayMeal.date, lastDayMeal.time, lastDayMeal.mealId, limit
+        )
+    }
+
+    suspend fun getDayMeal(mealId: Long): DayMealView {
+        return dao.getDayMeal(mealId)
     }
 }

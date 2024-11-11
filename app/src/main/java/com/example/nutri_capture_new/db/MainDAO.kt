@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Dao
 interface MainDAO {
@@ -37,5 +38,22 @@ interface MainDAO {
     suspend fun deleteDay(dayId: Long)
 
     @Query("SELECT * FROM DayMealView")
-    suspend fun getAllMeals(): List<DayMealView>
+    suspend fun getAllDayMeals(): List<DayMealView>
+
+    @Query("""
+    SELECT * FROM DayMealView 
+    WHERE day_date <= :lastDate
+      AND meal_time <= :lastTime 
+      AND meal_id != :lastId
+    LIMIT :limit
+    """)
+    suspend fun getNextDayMealsAfter(
+        lastDate: LocalDate,
+        lastTime: LocalTime,
+        lastId: Long,
+        limit: Int
+    ): List<DayMealView>
+
+    @Query("SELECT * FROM DayMealView WHERE meal_id = :mealId LIMIT 1")
+    suspend fun getDayMeal(mealId: Long): DayMealView
 }
