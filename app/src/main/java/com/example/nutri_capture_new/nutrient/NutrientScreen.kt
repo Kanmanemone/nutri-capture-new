@@ -28,6 +28,7 @@ import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -76,12 +77,26 @@ fun NutrientScreen(
     LaunchedEffect(key1 = viewModel.isInitialized.value) {
         if (viewModel.isInitialized.value) {
             // 무한 스크롤
-            snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItemsInfo ->
+            val shouldLoadMoreData = snapshotFlow {
                 val totalMaxIndex = listState.layoutInfo.totalItemsCount - 1
                 val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                val visibleItemCount = visibleItemsInfo.size
+                val visibleItemCount = listState.layoutInfo.visibleItemsInfo.size
+                totalMaxIndex <= firstVisibleItemIndex + visibleItemCount
+            }
 
-                if (totalMaxIndex <= firstVisibleItemIndex + visibleItemCount) {
+            val totalItemCount = snapshotFlow {
+                listState.layoutInfo.totalItemsCount
+            }
+
+            val loadMoreData = combine(
+                shouldLoadMoreData,
+                totalItemCount
+            ) { shouldLoadMoreDataValue, totalItemCountValue ->
+                Pair(shouldLoadMoreDataValue, totalItemCountValue)
+            }
+
+            loadMoreData.collect { (shouldLoadMoreData, _) ->
+                if (shouldLoadMoreData) {
                     viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal)
                 }
             }
