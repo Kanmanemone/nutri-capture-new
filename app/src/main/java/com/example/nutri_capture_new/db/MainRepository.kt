@@ -1,14 +1,17 @@
 package com.example.nutri_capture_new.db
 
+import android.util.Log
 import java.time.LocalDate
 
 class MainRepository(private val dao: MainDAO) {
     suspend fun insertMeal(meal: Meal, date: LocalDate): Long {
-        var dayId = dao.getDayId(date)
-        if (dayId == null) {
-            dayId = dao.insertDay(Day(date = date))
+        val dayId = dao.insertDay(Day(date = date))
+
+        return if (dayId == -1L) {
+            dao.insertMeal(meal.copy(dayId = dao.getDayId(date)))
+        } else {
+            dao.insertMeal(meal.copy(dayId = dayId))
         }
-        return dao.insertMeal(meal.copy(dayId = dayId))
     }
 
     suspend fun deleteMeal(meal: Meal): Int {

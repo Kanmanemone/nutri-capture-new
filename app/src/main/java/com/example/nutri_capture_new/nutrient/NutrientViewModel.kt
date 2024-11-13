@@ -48,10 +48,12 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal -> {
                 viewModelScope.launch {
-                    val lastDayMeal = _nutrientScreenState.value.dayMeals.last()
-                    _nutrientScreenState.value.dayMeals.addAll(
-                        repository.getNextDayMealsAfter(lastDayMeal, 10)
-                    )
+                    if(_nutrientScreenState.value.dayMeals.isNotEmpty()) {
+                        val lastDayMeal = _nutrientScreenState.value.dayMeals.last()
+                        _nutrientScreenState.value.dayMeals.addAll(
+                            repository.getNextDayMealsAfter(lastDayMeal, 10)
+                        )
+                    }
                 }
             }
 
@@ -78,19 +80,6 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
                     }
                 }
             }
-        }
-    }
-
-    // (5) DayMealView 작동 확인용 로그
-    fun log() {
-        viewModelScope.launch {
-            Log.i("interfacer_han, getAllDayMeals()", repository.getAllDayMeals().toString())
-            Log.i("interfacer_han, getNextDayMealsAfter()",
-                repository.getNextDayMealsAfter(
-                    repository.getDayMeal(6),
-                    100
-                ).toString()
-            )
         }
     }
 }

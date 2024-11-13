@@ -11,9 +11,9 @@ import java.time.LocalTime
 @Dao
 interface MainDAO {
     @Query("SELECT day_id FROM day_table WHERE day_date = :date LIMIT 1")
-    suspend fun getDayId(date: LocalDate): Long?
+    suspend fun getDayId(date: LocalDate): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDay(day: Day): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

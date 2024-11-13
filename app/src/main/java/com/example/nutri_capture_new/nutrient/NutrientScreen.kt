@@ -40,9 +40,6 @@ fun NutrientScreen(
     listState: LazyListState = rememberLazyListState()
 ) {
     LaunchedEffect(key1 = true) {
-        // DayMealView 작동 확인용 로그
-        viewModel.log()
-
         // State 초기화
         viewModel.onEvent(NutrientViewModelEvent.InitializeState)
 
