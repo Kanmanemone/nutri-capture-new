@@ -6,18 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nutri_capture_new.db.DayMealView
 import com.example.nutri_capture_new.db.MainRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
     // (1) 화면 표시용 State
     private val _nutrientScreenState = mutableStateOf(
         NutrientScreenState(
-            listOfDateAndMeals = SnapshotStateList()
+            dayMeals = SnapshotStateList()
         )
     )
     val nutrientScreenState: State<NutrientScreenState>
@@ -37,49 +37,33 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
     fun onEvent(event: NutrientViewModelEvent) {
         when (event) {
             is NutrientViewModelEvent.InitializeState -> {
-                var dateToInsert = LocalDate.now()
-                repeat(20) {
-                    _nutrientScreenState.value.listOfDateAndMeals.add(
-                        DateAndMeals(
-                            date = dateToInsert,
-                            meals = SnapshotStateList()
-                        )
-                    )
-                    dateToInsert = dateToInsert.plusDays(1)
+                viewModelScope.launch {
+                    _nutrientScreenState.value.dayMeals.apply {
+                        clear()
+                        addAll(repository.getAllDayMeals(10))
+                    }
                 }
-
                 _isInitialized.value = true
             }
 
-            is NutrientViewModelEvent.LoadMoreItemsAfterLastDate -> {
-                val lastDate = _nutrientScreenState.value.listOfDateAndMeals.last().date
-                _nutrientScreenState.value.listOfDateAndMeals.add(
-                    DateAndMeals(
-                        date = lastDate.plusDays(1),
-                        meals = SnapshotStateList()
+            is NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal -> {
+                viewModelScope.launch {
+                    val lastDayMeal = _nutrientScreenState.value.dayMeals.last()
+                    _nutrientScreenState.value.dayMeals.addAll(
+                        repository.getNextDayMealsAfter(lastDayMeal, 10)
                     )
-                )
-            }
-
-            is NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate -> {
-                val firstDate = _nutrientScreenState.value.listOfDateAndMeals.first().date
-                _nutrientScreenState.value.listOfDateAndMeals.add(
-                    0,
-                    DateAndMeals(
-                        date = firstDate.minusDays(1),
-                        meals = SnapshotStateList()
-                    )
-                )
+                }
             }
 
             is NutrientViewModelEvent.InsertMeal -> {
                 viewModelScope.launch {
-                    var insertedMealId = 0L
+                    var insertedMealId = -1L
                     insertedMealId = repository.insertMeal(event.meal, event.date)
-                    if (insertedMealId != 0L) {
-                        val dateAndMealsForUpdate =
-                            _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!
-                        dateAndMealsForUpdate.meals.add(event.meal)
+                    if (insertedMealId != -1L) {
+                        val insertedDayMeal = repository.getDayMeal(insertedMealId)
+                        val index =
+                            findIndexToInsert(_nutrientScreenState.value.dayMeals, insertedDayMeal)
+                        _nutrientScreenState.value.dayMeals.add(index, insertedDayMeal)
                     }
                 }
             }
@@ -89,21 +73,9 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
                     var deletedRowCount = 0
                     deletedRowCount = repository.deleteMeal(event.meal)
                     if (deletedRowCount == 1) {
-                        val dateAndMealsForUpdate =
-                            _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!
-                        val mealForDelete =
-                            dateAndMealsForUpdate.meals.find { it.mealId == event.meal.mealId }!!
-                        dateAndMealsForUpdate.meals.remove(mealForDelete)
+                        val deletedMealId = event.meal.mealId
+                        _nutrientScreenState.value.dayMeals.removeIf { it.mealId == deletedMealId }
                     }
-                }
-            }
-
-            is NutrientViewModelEvent.GetMealsByDate -> {
-                viewModelScope.launch {
-                    val mealForUpdate =
-                        _nutrientScreenState.value.listOfDateAndMeals.find { it.date == event.date }!!.meals
-                    mealForUpdate.clear()
-                    mealForUpdate.addAll(repository.getMealsOrderedByTime(event.date))
                 }
             }
         }
@@ -121,4 +93,14 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
             )
         }
     }
+}
+
+private fun findIndexToInsert(list: SnapshotStateList<DayMealView>, newItem: DayMealView): Int {
+    for(i: Int in list.indices) {
+        if(newItem < list[i]) {
+            return i
+        }
+    }
+    // 삽입할 위치가 없다면 맨 끝(list.size)에 삽입
+    return list.size
 }

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -26,8 +26,10 @@ import com.example.nutri_capture_new.db.Meal
 import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
@@ -59,6 +61,21 @@ fun NutrientScreen(
         }
     }
 
+    LaunchedEffect(key1 = true) {
+        repeat(5) {
+            viewModel.onEvent(
+                NutrientViewModelEvent.InsertMeal(
+                    meal = Meal(
+                        time = LocalTime.now(),
+                        name = "test",
+                        nutritionInfo = NutritionInfo()
+                    ),
+                    date = LocalDate.now()
+                )
+            )
+        }
+    }
+
     LaunchedEffect(key1 = viewModel.isInitialized.value) {
         if (viewModel.isInitialized.value) {
             // 무한 스크롤
@@ -68,13 +85,7 @@ fun NutrientScreen(
                 val visibleItemCount = visibleItemsInfo.size
 
                 if (totalMaxIndex <= firstVisibleItemIndex + visibleItemCount) {
-                    viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsAfterLastDate)
-                }
-
-                if (firstVisibleItemIndex == 0) {
-                    viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsBeforeFirstDate)
-                    // 역방향 무한 스크롤 구현을 위한 암시적 스크롤
-                    listState.requestScrollToItem(1, listState.firstVisibleItemScrollOffset)
+                    viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal)
                 }
             }
         }
@@ -82,24 +93,19 @@ fun NutrientScreen(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        reverseLayout = true
     ) {
-        val listOfDateAndMeals = viewModel.nutrientScreenState.value.listOfDateAndMeals
-        items(listOfDateAndMeals) { dateAndMeals ->
-            val date = dateAndMeals.date
-            val meals = dateAndMeals.meals
-
-            LaunchedEffect(key1 = true) {
-                viewModel.onEvent(NutrientViewModelEvent.GetMealsByDate(date))
-            }
-
+        val dayMeals = viewModel.nutrientScreenState.value.dayMeals
+        itemsIndexed(dayMeals) { index, dayMeal ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         start = 8.dp,
-                        top = 8.dp,
+                        top = if (index == dayMeals.lastIndex) 8.dp else 0.dp,
                         end = 8.dp,
+                        bottom = 8.dp
                     ),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
@@ -109,37 +115,18 @@ fun NutrientScreen(
                         .padding(8.dp)
                 ) {
                     Text(
-                        text = DateFormatter.formatDateForNutrientScreen(date),
+                        text = DateFormatter.formatDateForNutrientScreen(dayMeal.date) + " " + dayMeal.time,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 15.sp,
                         textAlign = TextAlign.End
                     )
 
-                    Button(
-                        onClick = {
-                            viewModel.onEvent(
-                                NutrientViewModelEvent.InsertMeal(
-                                    meal = Meal(
-                                        time = LocalTime.now(),
-                                        name = "자동 생성된 Meal",
-                                        nutritionInfo = NutritionInfo()
-                                    ),
-                                    date = date
-                                )
-                            )
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(
-                                top = 12.dp,
-                                bottom = 12.dp
-                            )
-                    ) {
-                        Text(
-                            text = "Meal Insert (현재: ${meals.size}개)",
-                            fontSize = 20.sp
-                        )
-                    }
+                    Text(
+                        text = "mealId: ${dayMeal.mealId}, index: $index",
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 30.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

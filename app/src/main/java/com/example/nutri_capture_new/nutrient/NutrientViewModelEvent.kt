@@ -5,9 +5,7 @@ import java.time.LocalDate
 
 sealed class NutrientViewModelEvent {
     data object InitializeState : NutrientViewModelEvent()
-    data object LoadMoreItemsAfterLastDate : NutrientViewModelEvent()
-    data object LoadMoreItemsBeforeFirstDate : NutrientViewModelEvent()
+    data object LoadMoreItemsAfterLastDayMeal : NutrientViewModelEvent()
     data class InsertMeal(val meal: Meal, val date: LocalDate) : NutrientViewModelEvent()
     data class DeleteMeal(val meal: Meal, val date: LocalDate) : NutrientViewModelEvent()
-    data class GetMealsByDate(val date: LocalDate) : NutrientViewModelEvent()
 }

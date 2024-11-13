@@ -51,4 +51,12 @@ data class DayMealView(
 
     @Embedded
     val nutritionInfo: NutritionInfo
-)
+) {
+    operator fun compareTo(otherDayMealView: DayMealView): Int {
+        return compareValuesBy(this, otherDayMealView,
+            { it.date }, // (1차) date에 대해 오름차순으로 비교 (date가 큰 쪽이 비교 우위)
+            { it.time }, // (2차) time에 대해 오름차순으로 비교 (time이 큰 쪽이 비교 우위)
+            { it.mealId } // (3차) mealId에 대해 오름차순으로 비교 (mealId가 큰 쪽이 비교 우위)
+        ) * -1 // 부호를 반전시키면, 내림차순으로 비교한 것과 동일한 결과가 나옴
+    }
+}

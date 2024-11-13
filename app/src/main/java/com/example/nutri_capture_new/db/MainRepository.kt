@@ -34,6 +34,10 @@ class MainRepository(private val dao: MainDAO) {
         return dao.getAllDayMeals()
     }
 
+    suspend fun getAllDayMeals(limit: Int): List<DayMealView> {
+        return dao.getAllDayMeals(limit)
+    }
+
     suspend fun getNextDayMealsAfter(lastDayMeal: DayMealView, limit: Int): List<DayMealView> {
         return dao.getNextDayMealsAfter(
             lastDayMeal.date, lastDayMeal.time, lastDayMeal.mealId, limit

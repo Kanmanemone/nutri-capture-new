@@ -40,6 +40,9 @@ interface MainDAO {
     @Query("SELECT * FROM DayMealView")
     suspend fun getAllDayMeals(): List<DayMealView>
 
+    @Query("SELECT * FROM DayMealView LIMIT :limit")
+    suspend fun getAllDayMeals(limit: Int): List<DayMealView>
+
     @Query("""
     SELECT * FROM DayMealView 
     WHERE day_date <= :lastDate
