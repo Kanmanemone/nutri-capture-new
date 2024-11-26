@@ -37,17 +37,31 @@ interface MainDAO {
     @Query("DELETE FROM day_table WHERE day_id = :dayId")
     suspend fun deleteDay(dayId: Long)
 
-    @Query("SELECT * FROM DayMealView")
+    @Query("""
+    SELECT * FROM DayMealView
+    ORDER BY day_date DESC,
+             meal_time DESC,
+             meal_id DESC
+    """)
     suspend fun getAllDayMeals(): List<DayMealView>
 
-    @Query("SELECT * FROM DayMealView LIMIT :limit")
+    @Query("""
+    SELECT * FROM DayMealView
+    ORDER BY day_date DESC,
+             meal_time DESC,
+             meal_id DESC
+    LIMIT :limit
+    """)
     suspend fun getAllDayMeals(limit: Int): List<DayMealView>
 
     @Query("""
     SELECT * FROM DayMealView 
-    WHERE day_date <= :lastDate
-      AND meal_time <= :lastTime 
-      AND meal_id != :lastId
+    WHERE day_date < :lastDate
+       OR (day_date = :lastDate AND meal_time < :lastTime)
+       OR (day_date = :lastDate AND meal_time = :lastTime AND meal_id < :lastId)
+    ORDER BY day_date DESC,
+             meal_time DESC,
+             meal_id DESC
     LIMIT :limit
     """)
     suspend fun getNextDayMealsAfter(
@@ -57,6 +71,13 @@ interface MainDAO {
         limit: Int
     ): List<DayMealView>
 
-    @Query("SELECT * FROM DayMealView WHERE meal_id = :mealId LIMIT 1")
+    @Query("""
+    SELECT * FROM DayMealView
+    WHERE meal_id = :mealId
+    ORDER BY day_date DESC,
+             meal_time DESC,
+             meal_id DESC
+    LIMIT 1
+    """)
     suspend fun getDayMeal(mealId: Long): DayMealView
 }
