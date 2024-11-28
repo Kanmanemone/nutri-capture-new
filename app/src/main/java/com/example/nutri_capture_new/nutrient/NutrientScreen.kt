@@ -1,16 +1,23 @@
 package com.example.nutri_capture_new.nutrient
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -26,7 +33,6 @@ import com.example.nutri_capture_new.db.Meal
 import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -56,21 +62,6 @@ fun NutrientScreen(
                     }
                 }
             }
-        }
-    }
-
-    LaunchedEffect(key1 = true) {
-        repeat(5) {
-            viewModel.onEvent(
-                NutrientViewModelEvent.InsertMeal(
-                    meal = Meal(
-                        time = LocalTime.now(),
-                        name = "test",
-                        nutritionInfo = NutritionInfo()
-                    ),
-                    date = LocalDate.now()
-                )
-            )
         }
     }
 
@@ -108,6 +99,38 @@ fun NutrientScreen(
         modifier = Modifier.fillMaxSize(),
         reverseLayout = true
     ) {
+        item {
+            FilledTonalButton(
+                onClick = {
+                    viewModel.onEvent(
+                        NutrientViewModelEvent.InsertMeal(
+                            meal = Meal(
+                                time = LocalTime.now(),
+                                name = "test",
+                                nutritionInfo = NutritionInfo()
+                            ),
+                            date = LocalDate.now()
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 8.dp,
+                        top = 0.dp,
+                        end = 8.dp,
+                        bottom = 8.dp
+                    ),
+                shape = CardDefaults.shape,
+                elevation = ButtonDefaults.filledTonalButtonElevation(4.dp)
+            ) {
+                Text(
+                    text = "+",
+                    fontSize = 30.sp
+                )
+            }
+        }
+
         val dayMeals = viewModel.nutrientScreenState.value.dayMeals
         itemsIndexed(dayMeals) { index, dayMeal ->
             Card(
@@ -119,26 +142,47 @@ fun NutrientScreen(
                         end = 8.dp,
                         bottom = 8.dp
                     ),
-                elevation = CardDefaults.cardElevation(8.dp)
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(
-                        text = DateFormatter.formatDateForNutrientScreen(dayMeal.date) + " " + dayMeal.time,
-                        modifier = Modifier.fillMaxWidth(),
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.End
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = DateFormatter.formatDateForNutrientScreen(dayMeal.date) + " " + dayMeal.time,
+                            modifier = Modifier.fillMaxWidth(),
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.End
+                        )
 
-                    Text(
-                        text = "mealId: ${dayMeal.mealId}, index: $index",
-                        modifier = Modifier.fillMaxWidth(),
-                        fontSize = 30.sp,
-                        textAlign = TextAlign.Center
-                    )
+                        Text(
+                            text = "mealId: ${dayMeal.mealId}, index: $index",
+                            modifier = Modifier.fillMaxWidth(),
+                            fontSize = 30.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            viewModel.onEvent(
+                                NutrientViewModelEvent.DeleteDayMeal(
+                                    dayMeal = dayMeal
+                                )
+                            )
+                        },
+                        modifier = Modifier.align(Alignment.TopStart)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         }
