@@ -22,6 +22,9 @@ interface MainDAO {
     @Delete
     suspend fun deleteMeal(meal: Meal): Int
 
+    @Query("DELETE FROM meal_table WHERE meal_id = :mealId")
+    suspend fun deleteMeal(mealId: Long): Int
+
     @Query("""
     SELECT meal_table.* 
     FROM meal_table 

@@ -80,6 +80,16 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
                     }
                 }
             }
+
+            is NutrientViewModelEvent.DeleteDayMeal -> {
+                viewModelScope.launch {
+                    var deletedRowCount = 0
+                    deletedRowCount = repository.deleteDayMeal(event.dayMeal)
+                    if (deletedRowCount == 1) {
+                        _nutrientScreenState.value.dayMeals.removeIf { it.mealId == event.dayMeal.mealId }
+                    }
+                }
+            }
         }
     }
 }

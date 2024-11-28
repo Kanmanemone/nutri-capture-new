@@ -1,6 +1,5 @@
 package com.example.nutri_capture_new.db
 
-import android.util.Log
 import java.time.LocalDate
 
 class MainRepository(private val dao: MainDAO) {
@@ -49,5 +48,20 @@ class MainRepository(private val dao: MainDAO) {
 
     suspend fun getDayMeal(mealId: Long): DayMealView {
         return dao.getDayMeal(mealId)
+    }
+
+    suspend fun deleteDayMeal(dayMeal: DayMealView): Int {
+        val deletedRowCount = dao.deleteMeal(dayMeal.mealId)
+
+        if (deletedRowCount == 0) {
+            return 0
+
+        } else {
+            val mealCount = dao.getMealCountForDay(dayMeal.dayId)
+            if (mealCount == 0) {
+                dao.deleteDay(dayMeal.dayId)
+            }
+            return deletedRowCount
+        }
     }
 }
