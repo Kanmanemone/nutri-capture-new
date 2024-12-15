@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -23,6 +23,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -132,16 +133,19 @@ fun NutrientScreen(
         }
 
         val dayMeals = viewModel.nutrientScreenState.value.dayMeals
-        itemsIndexed(dayMeals) { index, dayMeal ->
+        items(dayMeals, key = { it.mealId }) { dayMeal ->
+            val key = remember { dayMeal.mealId }
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         start = 8.dp,
-                        top = if (index == dayMeals.lastIndex) 8.dp else 0.dp,
+                        top = if (key == dayMeals.last().mealId) 8.dp else 0.dp,
                         end = 8.dp,
                         bottom = 8.dp
-                    ),
+                    )
+                    .animateItem(),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Box(
@@ -160,7 +164,7 @@ fun NutrientScreen(
                         )
 
                         Text(
-                            text = "mealId: ${dayMeal.mealId}, index: $index",
+                            text = "mealId: ${dayMeal.mealId}",
                             modifier = Modifier.fillMaxWidth(),
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
