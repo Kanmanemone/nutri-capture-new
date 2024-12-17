@@ -1,6 +1,5 @@
 package com.example.nutri_capture_new.nutrient
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -48,7 +47,7 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
 
             is NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal -> {
                 viewModelScope.launch {
-                    if(_nutrientScreenState.value.dayMeals.isNotEmpty()) {
+                    if (_nutrientScreenState.value.dayMeals.isNotEmpty()) {
                         val lastDayMeal = _nutrientScreenState.value.dayMeals.last()
                         _nutrientScreenState.value.dayMeals.addAll(
                             repository.getNextDayMealsAfter(lastDayMeal, 10)
@@ -95,11 +94,25 @@ class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
 }
 
 private fun findIndexToInsert(list: SnapshotStateList<DayMealView>, newItem: DayMealView): Int {
-    for(i: Int in list.indices) {
-        if(newItem < list[i]) {
-            return i
+    var min = 0
+    var max = list.size - 1
+
+    while (min <= max) {
+        val mid = (min + max) / 2
+
+        // up
+        if (list[mid] < newItem) {
+            min = mid + 1
+
+        // down
+        } else if (list[mid] > newItem) {
+            max = mid - 1
+
+        // equal
+        } else { // list[mid] == newItem
+            return mid + 1
         }
     }
-    // 삽입할 위치가 없다면 맨 끝(list.size)에 삽입
-    return list.size
+
+    return max + 1
 }

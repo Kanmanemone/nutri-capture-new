@@ -82,4 +82,10 @@ dependencies {
 
     // KSP (어노테이션 읽기용)
     ksp(libs.androidx.room.compiler)
+
+    // Truth
+    testImplementation(libs.truth)
+    testImplementation(libs.truth.java8.extension)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.truth.java8.extension)
 }
