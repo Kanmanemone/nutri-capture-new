@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nutri_capture_new.db.MainDatabase
 import com.example.nutri_capture_new.db.MainRepository
@@ -49,6 +51,8 @@ class MainActivity : ComponentActivity() {
             NutricapturenewTheme {
                 // Navigation 관리의 주체
                 val navController = rememberNavController()
+                val navBackStackEntry = navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry.value?.destination?.route
 
                 // Snackbar를 위한 CoroutineScope와 State
                 val scope = rememberCoroutineScope()
@@ -62,7 +66,10 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        MainNavigationBar(navController)
+                        when(currentRoute) {
+                            Destination.NutrientScreen.route -> BottomAppBar { Text("test") }
+                            else -> MainNavigationBar(navController)
+                        }
                     },
                     snackbarHost = {
                         SnackbarHost(
