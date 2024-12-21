@@ -4,15 +4,30 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -21,12 +36,16 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -67,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     },
                     bottomBar = {
                         when(currentRoute) {
-                            Destination.NutrientScreen.route -> BottomAppBar { Text("test") }
+                            Destination.NutrientScreen.route -> NutrientBottomBar()
                             else -> MainNavigationBar(navController)
                         }
                     },
@@ -148,6 +167,48 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 )
+            }
+        }
+    }
+
+    @Composable
+    private fun NutrientBottomBar() {
+        BottomAppBar {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = 2.dp,
+                        start = 8.dp,
+                        bottom = 6.dp
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                val inputtedText = remember { mutableStateOf("") }
+
+                OutlinedTextField(
+                    value = inputtedText.value,
+                    onValueChange = { newText -> inputtedText.value = newText },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    textStyle = TextStyle(
+                        fontSize = 16.sp
+                    ),
+                    placeholder = { Text("메시지 입력") },
+                    shape = RoundedCornerShape(50)
+                )
+
+                IconButton(
+                    onClick = { },
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = "Send",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
