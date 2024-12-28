@@ -11,6 +11,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -62,7 +63,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Sample Top Bar Text") }
+                            title = {
+                                Text(
+                                    text = "Sample Top Bar Text",
+                                    style = MaterialTheme.typography.headlineLarge
+                                )
+                            }
                         )
                     },
                     bottomBar = {
@@ -80,6 +86,7 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     Text(
                                         text = snackbarData.visuals.message,
+                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                 }
                             }
@@ -180,7 +187,10 @@ fun SampleContent(
             },
             modifier = Modifier.align(Alignment.Center)
         ) {
-            Text(text = text)
+            Text(
+                text = text,
+                style = MaterialTheme.typography.headlineMedium
+            )
         }
     }
 }

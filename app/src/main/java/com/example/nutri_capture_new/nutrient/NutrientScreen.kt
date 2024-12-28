@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -127,7 +128,7 @@ fun NutrientScreen(
             ) {
                 Text(
                     text = "+",
-                    fontSize = 30.sp
+                    style = MaterialTheme.typography.headlineMedium
                 )
             }
         }
@@ -159,15 +160,15 @@ fun NutrientScreen(
                         Text(
                             text = DateFormatter.formatDateForNutrientScreen(dayMeal.date) + " " + dayMeal.time,
                             modifier = Modifier.fillMaxWidth(),
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.End
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.labelLarge
                         )
 
                         Text(
                             text = "mealId: ${dayMeal.mealId}",
                             modifier = Modifier.fillMaxWidth(),
-                            fontSize = 30.sp,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineMedium
                         )
                     }
 
