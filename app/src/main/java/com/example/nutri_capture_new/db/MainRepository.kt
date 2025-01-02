@@ -1,5 +1,6 @@
 package com.example.nutri_capture_new.db
 
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 class MainRepository(private val dao: MainDAO) {
@@ -32,7 +33,7 @@ class MainRepository(private val dao: MainDAO) {
         return dao.getMealsOrderedByTime(targetDate)
     }
 
-    suspend fun getAllDayMeals(): List<DayMealView> {
+    fun getAllDayMeals(): Flow<List<DayMealView>> {
         return dao.getAllDayMeals()
     }
 

@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -46,7 +47,7 @@ interface MainDAO {
              meal_time DESC,
              meal_id DESC
     """)
-    suspend fun getAllDayMeals(): List<DayMealView>
+    fun getAllDayMeals(): Flow<List<DayMealView>>
 
     @Query("""
     SELECT * FROM DayMealView

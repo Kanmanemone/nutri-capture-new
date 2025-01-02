@@ -1,118 +1,62 @@
 package com.example.nutri_capture_new.nutrient
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutri_capture_new.db.DayMealView
 import com.example.nutri_capture_new.db.MainRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
     // (1) 화면 표시용 State
-    private val _nutrientScreenState = mutableStateOf(
+    private val _nutrientScreenState = MutableStateFlow(
         NutrientScreenState(
             dayMeals = SnapshotStateList()
         )
     )
-    val nutrientScreenState: State<NutrientScreenState>
+    val nutrientScreenState: StateFlow<NutrientScreenState>
         get() = _nutrientScreenState
 
-    // (2) ViewModel용 내부 변수
-    private val _isInitialized = mutableStateOf(false)
-    val isInitialized: State<Boolean>
-        get() = _isInitialized
+    init {
+        viewModelScope.launch {
+            repository.getAllDayMeals().collect { dayMeals ->
+                _nutrientScreenState.value.dayMeals.apply {
+                    clear()
+                    addAll(dayMeals)
+                }
+            }
+        }
+    }
 
-    // (3) View에서 받아 처리할 이벤트
+    // (2) View에서 받아 처리할 이벤트
     private val _nutrientScreenEventFlow = MutableSharedFlow<NutrientScreenEvent>()
     val nutrientScreenEventFlow: SharedFlow<NutrientScreenEvent>
         get() = _nutrientScreenEventFlow.asSharedFlow()
 
-    // (4) View로부터 받은 이벤트 처리
+    // (3) View로부터 받은 이벤트 처리
     fun onEvent(event: NutrientViewModelEvent) {
         when (event) {
-            is NutrientViewModelEvent.InitializeState -> {
-                viewModelScope.launch {
-                    _nutrientScreenState.value.dayMeals.apply {
-                        clear()
-                        addAll(repository.getAllDayMeals(10))
-                    }
-                }
-                _isInitialized.value = true
-            }
-
-            is NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal -> {
-                viewModelScope.launch {
-                    if (_nutrientScreenState.value.dayMeals.isNotEmpty()) {
-                        val lastDayMeal = _nutrientScreenState.value.dayMeals.last()
-                        _nutrientScreenState.value.dayMeals.addAll(
-                            repository.getNextDayMealsAfter(lastDayMeal, 10)
-                        )
-                    }
-                }
-            }
-
             is NutrientViewModelEvent.InsertMeal -> {
                 viewModelScope.launch {
-                    var insertedMealId = -1L
-                    insertedMealId = repository.insertMeal(event.meal, event.date)
-                    if (insertedMealId != -1L) {
-                        val insertedDayMeal = repository.getDayMeal(insertedMealId)
-                        val index =
-                            findIndexToInsert(_nutrientScreenState.value.dayMeals, insertedDayMeal)
-                        _nutrientScreenState.value.dayMeals.add(index, insertedDayMeal)
-                    }
+                    repository.insertMeal(event.meal, event.date)
                 }
             }
 
             is NutrientViewModelEvent.DeleteMeal -> {
                 viewModelScope.launch {
-                    var deletedRowCount = 0
-                    deletedRowCount = repository.deleteMeal(event.meal)
-                    if (deletedRowCount == 1) {
-                        val deletedMealId = event.meal.mealId
-                        _nutrientScreenState.value.dayMeals.removeIf { it.mealId == deletedMealId }
-                    }
+                    repository.deleteMeal(event.meal)
                 }
             }
 
             is NutrientViewModelEvent.DeleteDayMeal -> {
                 viewModelScope.launch {
-                    var deletedRowCount = 0
-                    deletedRowCount = repository.deleteDayMeal(event.dayMeal)
-                    if (deletedRowCount == 1) {
-                        _nutrientScreenState.value.dayMeals.removeIf { it.mealId == event.dayMeal.mealId }
-                    }
+                    repository.deleteDayMeal(event.dayMeal)
                 }
             }
         }
     }
-}
-
-private fun findIndexToInsert(list: SnapshotStateList<DayMealView>, newItem: DayMealView): Int {
-    var min = 0
-    var max = list.size - 1
-
-    while (min <= max) {
-        val mid = (min + max) / 2
-
-        // up
-        if (list[mid] < newItem) {
-            min = mid + 1
-
-        // down
-        } else if (list[mid] > newItem) {
-            max = mid - 1
-
-        // equal
-        } else { // list[mid] == newItem
-            return mid + 1
-        }
-    }
-
-    return max + 1
 }

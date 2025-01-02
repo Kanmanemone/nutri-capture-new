@@ -25,18 +25,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.nutri_capture_new.db.Meal
 import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -49,9 +46,6 @@ fun NutrientScreen(
     listState: LazyListState = rememberLazyListState()
 ) {
     LaunchedEffect(key1 = true) {
-        // State 초기화
-        viewModel.onEvent(NutrientViewModelEvent.InitializeState)
-
         // ViewModel로부터 받은 이벤트 처리
         viewModel.nutrientScreenEventFlow.collectLatest { event ->
             when (event) {
@@ -62,35 +56,6 @@ fun NutrientScreen(
                             duration = SnackbarDuration.Short
                         )
                     }
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = viewModel.isInitialized.value) {
-        if (viewModel.isInitialized.value) {
-            // 무한 스크롤
-            val shouldLoadMoreData = snapshotFlow {
-                val totalMaxIndex = listState.layoutInfo.totalItemsCount - 1
-                val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                val visibleItemCount = listState.layoutInfo.visibleItemsInfo.size
-                totalMaxIndex <= firstVisibleItemIndex + visibleItemCount
-            }
-
-            val totalItemCount = snapshotFlow {
-                listState.layoutInfo.totalItemsCount
-            }
-
-            val loadMoreData = combine(
-                shouldLoadMoreData,
-                totalItemCount
-            ) { shouldLoadMoreDataValue, totalItemCountValue ->
-                Pair(shouldLoadMoreDataValue, totalItemCountValue)
-            }
-
-            loadMoreData.collect { (shouldLoadMoreData, _) ->
-                if (shouldLoadMoreData) {
-                    viewModel.onEvent(NutrientViewModelEvent.LoadMoreItemsAfterLastDayMeal)
                 }
             }
         }
