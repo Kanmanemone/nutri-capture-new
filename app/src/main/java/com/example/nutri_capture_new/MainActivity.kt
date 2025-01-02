@@ -52,19 +52,34 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.nutri_capture_new.db.MainDAO
 import com.example.nutri_capture_new.db.MainDatabase
 import com.example.nutri_capture_new.db.MainRepository
+import com.example.nutri_capture_new.db.Meal
+import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.nutrient.NutrientScreen
+import com.example.nutri_capture_new.nutrient.NutrientViewModel
+import com.example.nutri_capture_new.nutrient.NutrientViewModelEvent
 import com.example.nutri_capture_new.nutrient.NutrientViewModelFactory
 import com.example.nutri_capture_new.ui.theme.Dimens
 import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var dao: MainDAO
+    private lateinit var repository: MainRepository
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dao = MainDatabase.getInstance(application).mainDAO
+        repository = MainRepository(dao)
+
         enableEdgeToEdge()
         setContent {
             NutricapturenewTheme {
@@ -90,8 +105,13 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        when(currentRoute) {
-                            Destination.NutrientScreen.route -> NutrientChatBar()
+                        when (currentRoute) {
+                            Destination.NutrientScreen.route -> NutrientChatBar(
+                                viewModel(
+                                    factory = NutrientViewModelFactory(repository)
+                                )
+                            )
+
                             else -> MainNavigationBar(navController)
                         }
                     },
@@ -117,8 +137,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = Destination.NutrientScreen.route) {
-                            val dao = MainDatabase.getInstance(application).mainDAO
-                            val repository = MainRepository(dao)
                             NutrientScreen(
                                 scope = scope,
                                 snackbarHostState = snackbarHostState,
@@ -178,7 +196,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun NutrientChatBar() {
+    fun NutrientChatBar(viewModel: NutrientViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -223,6 +241,16 @@ class MainActivity : ComponentActivity() {
             ) {
                 FilledTonalIconButton(
                     onClick = {
+                        viewModel.onEvent(
+                            NutrientViewModelEvent.InsertMeal(
+                                meal = Meal(
+                                    time = LocalTime.now(),
+                                    name = inputtedText.value,
+                                    nutritionInfo = NutritionInfo()
+                                ),
+                                date = LocalDate.now()
+                            )
+                        )
                         inputtedText.value = ""
                     },
                     modifier = Modifier

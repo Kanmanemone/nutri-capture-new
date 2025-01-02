@@ -165,7 +165,7 @@ fun NutrientScreen(
                         )
 
                         Text(
-                            text = "mealId: ${dayMeal.mealId}",
+                            text = "name: ${dayMeal.name} mealId: ${dayMeal.mealId}",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.headlineMedium
