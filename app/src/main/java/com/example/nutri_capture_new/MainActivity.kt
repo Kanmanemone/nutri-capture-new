@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -101,6 +102,24 @@ class MainActivity : ComponentActivity() {
                                     text = "Sample Top Bar Text",
                                     style = MaterialTheme.typography.headlineLarge
                                 )
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = {
+                                        navController.navigate("statisticsScreen") {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painterResource(id = R.drawable.stacked_line_chart),
+                                        contentDescription = "통계"
+                                    )
+                                }
                             }
                         )
                     },
