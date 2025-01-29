@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalTime
 
 @Dao
 interface MainDAO {
@@ -26,15 +25,6 @@ interface MainDAO {
     @Query("DELETE FROM meal_table WHERE meal_id = :mealId")
     suspend fun deleteMeal(mealId: Long): Int
 
-    @Query("""
-    SELECT meal_table.* 
-    FROM meal_table 
-    INNER JOIN day_table ON meal_table.day_id = day_table.day_id 
-    WHERE day_table.day_date = :targetDate 
-    ORDER BY meal_table.meal_time ASC
-    """)
-    suspend fun getMealsOrderedByTime(targetDate: LocalDate): List<Meal>
-
     @Query("SELECT COUNT(*) FROM meal_table WHERE day_id = :dayId")
     suspend fun getMealCountForDay(dayId: Long): Int
 
@@ -48,32 +38,6 @@ interface MainDAO {
              meal_id DESC
     """)
     fun getAllDayMeals(): Flow<List<DayMealView>>
-
-    @Query("""
-    SELECT * FROM DayMealView
-    ORDER BY day_date DESC,
-             meal_time DESC,
-             meal_id DESC
-    LIMIT :limit
-    """)
-    suspend fun getAllDayMeals(limit: Int): List<DayMealView>
-
-    @Query("""
-    SELECT * FROM DayMealView 
-    WHERE day_date < :lastDate
-       OR (day_date = :lastDate AND meal_time < :lastTime)
-       OR (day_date = :lastDate AND meal_time = :lastTime AND meal_id < :lastId)
-    ORDER BY day_date DESC,
-             meal_time DESC,
-             meal_id DESC
-    LIMIT :limit
-    """)
-    suspend fun getNextDayMealsAfter(
-        lastDate: LocalDate,
-        lastTime: LocalTime,
-        lastId: Long,
-        limit: Int
-    ): List<DayMealView>
 
     @Query("""
     SELECT * FROM DayMealView
