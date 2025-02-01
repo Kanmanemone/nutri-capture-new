@@ -4,15 +4,19 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nutri_capture_new.db.MainRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NutrientViewModel(private val repository: MainRepository) : ViewModel() {
+@HiltViewModel
+class NutrientViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
     // 화면 표시용 State
     private val _nutrientScreenState = MutableStateFlow(
         NutrientScreenState(
-            dayMeals = SnapshotStateList()
+            dayMeals = SnapshotStateList(),
+            inputtedMealName = ""
         )
     )
     val nutrientScreenState: StateFlow<NutrientScreenState>

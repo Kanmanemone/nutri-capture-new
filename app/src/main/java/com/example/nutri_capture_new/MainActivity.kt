@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,24 +14,22 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nutri_capture_new.db.MainDAO
-import com.example.nutri_capture_new.db.MainDatabase
 import com.example.nutri_capture_new.db.MainRepository
 import com.example.nutri_capture_new.nutrient.NutrientChatBar
 import com.example.nutri_capture_new.nutrient.NutrientScreen
-import com.example.nutri_capture_new.nutrient.NutrientViewModelFactory
+import com.example.nutri_capture_new.nutrient.NutrientViewModel
 import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var dao: MainDAO
-    private lateinit var repository: MainRepository
+    // nutrientViewModel이 Hilt의 viewModels()에 의해 관리되도록 위임(by). 따라서 반드시 by 키워드로 선언해야함.
+    private val nutrientViewModel: NutrientViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        dao = MainDatabase.getInstance(application).mainDAO
-        repository = MainRepository(dao)
 
         enableEdgeToEdge()
         setContent {
@@ -40,11 +39,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .windowInsetsPadding(WindowInsets.ime),
                     bottomBar = {
-                        NutrientChatBar(
-                            viewModel(
-                                factory = NutrientViewModelFactory(repository)
-                            )
-                        )
+                        NutrientChatBar()
                     }
                 ) { innerPadding ->
                     Box(
@@ -52,9 +47,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .fillMaxSize()
                     ) {
-                        NutrientScreen(
-                            viewModel = viewModel(factory = NutrientViewModelFactory(repository))
-                        )
+                        NutrientScreen()
                     }
                 }
             }

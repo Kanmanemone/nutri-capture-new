@@ -2,8 +2,9 @@ package com.example.nutri_capture_new.db
 
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import javax.inject.Inject
 
-class MainRepository(private val dao: MainDAO) {
+class MainRepository @Inject constructor(private val dao: MainDAO) {
     suspend fun insertMeal(meal: Meal, date: LocalDate): Long {
         val dayId = dao.insertDay(Day(date = date))
 
