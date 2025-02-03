@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
         Day::class,
         Meal::class
     ],
-    views = [DayMealView::class],
+    views = [DayMeal::class],
     version = 1
 )
 @TypeConverters(Converters::class)

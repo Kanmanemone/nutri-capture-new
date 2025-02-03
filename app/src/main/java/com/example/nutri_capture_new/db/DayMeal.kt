@@ -33,27 +33,27 @@ Day 테이블의 dayId와 Day의 자식인 Meal 테이블의 dayId가 같은(==)
              meal_table.meal_time DESC,
              meal_table.meal_id DESC
 """)
-data class DayMealView(
+data class DayMeal(
     @ColumnInfo(name = "day_id")
-    val dayId: Long,
+    val dayId: Long = 0,
 
     @ColumnInfo(name = "meal_id")
-    val mealId: Long,
+    val mealId: Long = 0,
 
     @ColumnInfo(name = "day_date")
-    var date: LocalDate,
+    var date: LocalDate = LocalDate.now(),
 
     @ColumnInfo(name = "meal_time")
-    var time: LocalTime,
+    var time: LocalTime = LocalTime.now(),
 
     @ColumnInfo(name = "meal_name")
-    var name: String,
+    var name: String = "",
 
     @Embedded
-    val nutritionInfo: NutritionInfo
+    val nutritionInfo: NutritionInfo = NutritionInfo()
 ) {
-    operator fun compareTo(otherDayMealView: DayMealView): Int {
-        return compareValuesBy(this, otherDayMealView,
+    operator fun compareTo(otherDayMeal: DayMeal): Int {
+        return compareValuesBy(this, otherDayMeal,
             { it.date }, // (1차) date에 대해 오름차순으로 비교 (date가 큰 쪽이 비교 우위)
             { it.time }, // (2차) time에 대해 오름차순으로 비교 (time이 큰 쪽이 비교 우위)
             { it.mealId } // (3차) mealId에 대해 오름차순으로 비교 (mealId가 큰 쪽이 비교 우위)

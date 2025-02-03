@@ -31,21 +31,25 @@ interface MainDAO {
     @Query("DELETE FROM day_table WHERE day_id = :dayId")
     suspend fun deleteDay(dayId: Long)
 
-    @Query("""
-    SELECT * FROM DayMealView
+    @Query(
+        """
+    SELECT * FROM DayMeal
     ORDER BY day_date DESC,
              meal_time DESC,
              meal_id DESC
-    """)
-    fun getAllDayMeals(): Flow<List<DayMealView>>
+    """
+    )
+    fun getAllDayMeals(): Flow<List<DayMeal>>
 
-    @Query("""
-    SELECT * FROM DayMealView
+    @Query(
+        """
+    SELECT * FROM DayMeal
     WHERE meal_id = :mealId
     ORDER BY day_date DESC,
              meal_time DESC,
              meal_id DESC
     LIMIT 1
-    """)
-    suspend fun getDayMeal(mealId: Long): DayMealView
+    """
+    )
+    suspend fun getDayMeal(mealId: Long): DayMeal
 }

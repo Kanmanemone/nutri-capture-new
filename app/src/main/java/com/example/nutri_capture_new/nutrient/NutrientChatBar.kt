@@ -3,6 +3,7 @@ package com.example.nutri_capture_new.nutrient
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,21 +21,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.nutri_capture_new.db.Meal
-import com.example.nutri_capture_new.db.NutritionInfo
 import com.example.nutri_capture_new.ui.theme.Dimens
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun NutrientChatBar(
@@ -54,27 +48,7 @@ fun NutrientChatBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
     ) {
-        var inputtedText by remember { mutableStateOf("") }
-        TextField(
-            value = inputtedText,
-            onValueChange = { newText -> inputtedText = newText },
-            modifier = Modifier
-                .weight(1f)
-                .heightIn(min = Dimens.TextField.minHeight, max = Dimens.TextField.maxHeight)
-                .padding() // 이 TextField()를 감싸는 Row()의 padding이, TextField의 padding 역할을 대신 수행
-                .clip(shape = RoundedCornerShape(Dimens.TextField.roundedCorner)),
-            textStyle = Dimens.TextField.textStyle(),
-            placeholder = {
-                Text(
-                    text = "메뉴 입력",
-                    style = Dimens.TextField.textStyle()
-                )
-            },
-            colors = TextFieldDefaults.colors().copy(
-                unfocusedIndicatorColor = Color.Transparent, // 맨 하단에 있는 밑줄 투명화
-                focusedIndicatorColor = Color.Transparent // TextField가 포커스될 때 맨 하단 밑줄 색 투명화
-            )
-        )
+        ExpandableTextField()
 
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -85,16 +59,8 @@ fun NutrientChatBar(
             FilledTonalIconButton(
                 onClick = {
                     viewModel.onEvent(
-                        NutrientViewModelEvent.InsertMeal(
-                            meal = Meal(
-                                time = LocalTime.now(),
-                                name = inputtedText,
-                                nutritionInfo = NutritionInfo()
-                            ),
-                            date = LocalDate.now()
-                        )
+                        NutrientViewModelEvent.InsertInputtedDayMeal
                     )
-                    inputtedText = ""
                 },
                 modifier = Modifier
                     .size(Dimens.IconButton.targetSize)
@@ -108,4 +74,40 @@ fun NutrientChatBar(
             }
         }
     }
+}
+
+@Composable
+fun RowScope.ExpandableTextField(
+    viewModel: NutrientViewModel = hiltViewModel()
+) {
+    val inputtedDayMeal = viewModel.nutrientScreenState.collectAsState().value.inputtedDayMeal
+
+    TextField(
+        value = inputtedDayMeal.name,
+        onValueChange = { newText ->
+            viewModel.onEvent(
+                NutrientViewModelEvent.UpdateInputtedDayMeal(
+                    inputtedDayMeal.copy(
+                        name = newText
+                    )
+                )
+            )
+        },
+        modifier = Modifier
+            .weight(1f)
+            .heightIn(min = Dimens.TextField.minHeight, max = Dimens.TextField.maxHeight)
+            .padding() // 이 TextField()를 감싸는 Row()의 padding이, TextField의 padding 역할을 대신 수행
+            .clip(shape = RoundedCornerShape(Dimens.TextField.roundedCorner)),
+        textStyle = Dimens.TextField.textStyle(),
+        placeholder = {
+            Text(
+                text = "메뉴 입력",
+                style = Dimens.TextField.textStyle()
+            )
+        },
+        colors = TextFieldDefaults.colors().copy(
+            unfocusedIndicatorColor = Color.Transparent, // 맨 하단에 있는 밑줄 투명화
+            focusedIndicatorColor = Color.Transparent // TextField가 포커스될 때 맨 하단 밑줄 색 투명화
+        )
+    )
 }

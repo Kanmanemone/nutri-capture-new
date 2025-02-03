@@ -3,6 +3,7 @@ package com.example.nutri_capture_new.nutrient
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nutri_capture_new.db.DayMeal
 import com.example.nutri_capture_new.db.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ class NutrientViewModel @Inject constructor(private val repository: MainReposito
     private val _nutrientScreenState = MutableStateFlow(
         NutrientScreenState(
             dayMeals = SnapshotStateList(),
-            inputtedMealName = ""
+            inputtedDayMeal = DayMeal()
         )
     )
     val nutrientScreenState: StateFlow<NutrientScreenState>
@@ -36,15 +37,18 @@ class NutrientViewModel @Inject constructor(private val repository: MainReposito
     // View로부터 받은 이벤트 처리
     fun onEvent(event: NutrientViewModelEvent) {
         when (event) {
-            is NutrientViewModelEvent.InsertMeal -> {
-                viewModelScope.launch {
-                    repository.insertMeal(event.meal, event.date)
-                }
+            is NutrientViewModelEvent.UpdateInputtedDayMeal -> {
+                _nutrientScreenState.value = _nutrientScreenState.value.copy(
+                    inputtedDayMeal = event.dayMeal
+                )
             }
 
-            is NutrientViewModelEvent.DeleteMeal -> {
+            is NutrientViewModelEvent.InsertInputtedDayMeal -> {
                 viewModelScope.launch {
-                    repository.deleteMeal(event.meal)
+                    repository.insertDayMeal(_nutrientScreenState.value.inputtedDayMeal)
+                    _nutrientScreenState.value = _nutrientScreenState.value.copy(
+                        inputtedDayMeal = DayMeal()
+                    )
                 }
             }
 
