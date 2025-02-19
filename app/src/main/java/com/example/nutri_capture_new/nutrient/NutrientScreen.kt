@@ -2,6 +2,7 @@ package com.example.nutri_capture_new.nutrient
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,11 +31,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.nutri_capture_new.utils.DateFormatter
 
 @Composable
-fun NutrientScreen(
+fun ColumnScope.NutrientScreen(
     viewModel: NutrientViewModel = hiltViewModel()
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.weight(1f),
         reverseLayout = true
     ) {
         item { // 이 1dp 높이의 item이 없으면, 새 아이템 생성 시의, '생성 애니메이션'이 잘 안 뜸

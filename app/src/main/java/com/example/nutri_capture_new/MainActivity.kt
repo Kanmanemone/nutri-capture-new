@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutri_capture_new.db.MainRepository
+import com.example.nutri_capture_new.nutrient.NutrientBottomSheet
 import com.example.nutri_capture_new.nutrient.NutrientChatBar
 import com.example.nutri_capture_new.nutrient.NutrientScreen
 import com.example.nutri_capture_new.nutrient.NutrientViewModel
@@ -38,21 +42,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NutricapturenewTheme {
-                BottomSheetScaffold(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .windowInsetsPadding(WindowInsets.systemBars)
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                         .windowInsetsPadding(WindowInsets.ime),
-                    sheetContent = {
-
-                    }
-                ) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
-                    ) {
-                        NutrientScreen()
-                        NutrientChatBar()
+                ) {
+                    BottomSheetScaffold(
+                        sheetContent = {
+                            NutrientBottomSheet()
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                        sheetPeekHeight = 300.dp
+                    ) { innerPadding ->
+                        Column(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize()
+                        ) {
+                            NutrientScreen()
+                            NutrientChatBar()
+                        }
                     }
                 }
             }
