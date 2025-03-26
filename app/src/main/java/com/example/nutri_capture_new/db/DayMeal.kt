@@ -19,13 +19,13 @@ Day 테이블의 dayId와 Day의 자식인 Meal 테이블의 dayId가 같은(==)
            meal_table.meal_time AS meal_time,
            meal_table.meal_name AS meal_name,
            /* NutritionInfo의 Column 시작 */
-           meal_table.overeating_excess AS overeating_excess,
-           meal_table.refined_sugar_excess AS refined_sugar_excess,
-           meal_table.refined_grain_excess AS refined_grain_excess,
-           meal_table.flour_excess AS flour_excess,
-           meal_table.fiber_quality AS fiber_quality,
-           meal_table.protein_quality AS protein_quality,
-           meal_table.sodium_excess AS sodium_excess
+           meal_table.overeating_value AS overeating_value,
+           meal_table.refined_sugar_value AS refined_sugar_value,
+           meal_table.refined_grain_value AS refined_grain_value,
+           meal_table.flour_value AS flour_value,
+           meal_table.fiber_value AS fiber_value,
+           meal_table.protein_value AS protein_value,
+           meal_table.sodium_value AS sodium_value
            /* NutritionInfo의 Column 끝 */
     FROM day_table
     INNER JOIN meal_table ON meal_table.day_id = day_table.day_id
