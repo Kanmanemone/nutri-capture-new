@@ -1,11 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
     // KSP 및 kapt (어노테이션 읽기용)
-    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.ksp)
     // Hilt
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -80,8 +80,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Room
-    implementation (libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     // Truth
@@ -93,6 +93,5 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose) // Hilt와 Jetpack Compose의 ViewModel을 함께 사용할 수 있게 해주는 라이브러리 (hiltViewModel() 사용 가능)
 }
