@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     // KSP 및 kapt (어노테이션 읽기용)
     id("org.jetbrains.kotlin.kapt")
     alias(libs.plugins.ksp)
@@ -10,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.example.nutri_capture_new"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.nutri_capture_new"
@@ -43,9 +44,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {
@@ -94,4 +92,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose) // Hilt와 Jetpack Compose의 ViewModel을 함께 사용할 수 있게 해주는 라이브러리 (hiltViewModel() 사용 가능)
+
+    // Icons
+    implementation(libs.androidx.material.icons.extended)
 }
