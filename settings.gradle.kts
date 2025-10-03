@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "nutri-capture-new"
 include(":app")
+include(":database")
+include(":designsystem")

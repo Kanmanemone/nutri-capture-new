@@ -3,8 +3,8 @@ package com.example.nutri_capture_new.nutrient
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutri_capture_new.db.DayMeal
-import com.example.nutri_capture_new.db.MainRepository
+import com.example.database.DayMeal
+import com.example.database.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

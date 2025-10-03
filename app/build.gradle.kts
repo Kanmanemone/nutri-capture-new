@@ -2,10 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // KSP 및 kapt (어노테이션 읽기용)
     id("org.jetbrains.kotlin.kapt")
-    alias(libs.plugins.ksp)
-    // Hilt
     alias(libs.plugins.hilt)
 }
 
@@ -77,11 +74,6 @@ dependencies {
     // ViewModel (Compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
     // Truth
     testImplementation(libs.truth)
     testImplementation(libs.truth.java8.extension)
@@ -93,6 +85,10 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose) // Hilt와 Jetpack Compose의 ViewModel을 함께 사용할 수 있게 해주는 라이브러리 (hiltViewModel() 사용 가능)
 
-    // Icons
+    // Icon
     implementation(libs.androidx.material.icons.extended)
+
+    // Module
+    implementation(project(":database"))
+    implementation(project(":designsystem"))
 }

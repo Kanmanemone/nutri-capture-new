@@ -16,18 +16,14 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nutri_capture_new.db.MainRepository
+import com.example.designsystem.NutricapturenewTheme
 import com.example.nutri_capture_new.nutrient.NutrientBottomSheet
 import com.example.nutri_capture_new.nutrient.NutrientChatBar
 import com.example.nutri_capture_new.nutrient.NutrientScreen
 import com.example.nutri_capture_new.nutrient.NutrientViewModel
-import com.example.nutri_capture_new.ui.theme.NutricapturenewTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

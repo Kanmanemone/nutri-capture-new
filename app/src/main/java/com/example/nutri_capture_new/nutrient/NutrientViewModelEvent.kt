@@ -1,7 +1,6 @@
 package com.example.nutri_capture_new.nutrient
 
-import com.example.nutri_capture_new.db.DayMeal
-import com.example.nutri_capture_new.db.Meal
+import com.example.database.DayMeal
 
 sealed class NutrientViewModelEvent {
     data class UpdateInputtedDayMeal(val dayMeal: DayMeal) : NutrientViewModelEvent()
