@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.nutri_capture_new.ui.theme.Dimens
+import com.example.designsystem.Dimens
 
 @Composable
 fun NutrientChatBar(
