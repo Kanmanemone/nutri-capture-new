@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new.nutrient
+package com.example.nutrient
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.designsystem.Dimens
+import com.example.nutrient.ExpandableTextField
 
 @Composable
 fun NutrientChatBar(

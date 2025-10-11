@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new.utils
+package com.example.ui
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.ui.animatedDrawArc
 
 @Composable
 fun ResponsiveArcSurroundedIconButton(

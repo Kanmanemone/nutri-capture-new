@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new.nutrient
+package com.example.nutrient
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.nutri_capture_new.utils.ResponsiveArcSurroundedIconButton
+import com.example.ui.ResponsiveArcSurroundedIconButton
 
 @Composable
 fun NutrientBottomSheet(
