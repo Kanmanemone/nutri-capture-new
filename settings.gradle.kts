@@ -23,3 +23,6 @@ rootProject.name = "nutri-capture-new"
 include(":app")
 include(":database")
 include(":designsystem")
+include(":ui")
+include(":feature:nutrient")
+include(":common")

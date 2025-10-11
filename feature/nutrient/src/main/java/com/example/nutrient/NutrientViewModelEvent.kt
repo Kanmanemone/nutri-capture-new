@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new.nutrient
+package com.example.nutrient
 
 import com.example.database.DayMeal
 

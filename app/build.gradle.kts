@@ -67,28 +67,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Navigation
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
-
-    // ViewModel (Compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Truth
-    testImplementation(libs.truth)
-    testImplementation(libs.truth.java8.extension)
-    androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.truth.java8.extension)
-
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose) // Hilt와 Jetpack Compose의 ViewModel을 함께 사용할 수 있게 해주는 라이브러리 (hiltViewModel() 사용 가능)
 
-    // Icon
-    implementation(libs.androidx.material.icons.extended)
-
     // Module
     implementation(project(":database"))
     implementation(project(":designsystem"))
+    implementation(project(":feature:nutrient"))
 }

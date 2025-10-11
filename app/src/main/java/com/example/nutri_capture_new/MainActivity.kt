@@ -19,10 +19,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.NutricapturenewTheme
-import com.example.nutri_capture_new.nutrient.NutrientBottomSheet
-import com.example.nutri_capture_new.nutrient.NutrientChatBar
-import com.example.nutri_capture_new.nutrient.NutrientScreen
-import com.example.nutri_capture_new.nutrient.NutrientViewModel
+import com.example.nutrient.NutrientBottomSheet
+import com.example.nutrient.NutrientChatBar
+import com.example.nutrient.NutrientScreen
+import com.example.nutrient.NutrientViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

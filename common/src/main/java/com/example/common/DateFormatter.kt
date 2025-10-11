@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new.utils
+package com.example.common
 
 import java.time.LocalDate
 import java.time.format.TextStyle
