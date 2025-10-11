@@ -76,4 +76,5 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":designsystem"))
     implementation(project(":feature:nutrient"))
+    implementation(project(":datastore"))
 }
