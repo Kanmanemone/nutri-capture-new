@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
@@ -81,6 +83,10 @@ fun NutrientBottomSheet(
                     style = MaterialTheme.typography.labelLarge
                 )
             }
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Spacer(Modifier.navigationBarsPadding())
         }
     }
 }
