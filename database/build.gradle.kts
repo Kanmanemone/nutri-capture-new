@@ -48,5 +48,5 @@ dependencies {
     // Hilt
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose) // Hilt와 Jetpack Compose의 ViewModel을 함께 사용할 수 있게 해주는 라이브러리 (hiltViewModel() 사용 가능)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 }
