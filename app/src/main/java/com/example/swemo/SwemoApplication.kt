@@ -1,11 +1,11 @@
-package com.example.nutri_capture_new
+package com.example.swemo
 
 import android.app.Application
 import com.example.datastore.SystemPreferences
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class NcApplication : Application() {
+class SwemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

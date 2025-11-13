@@ -1,4 +1,4 @@
-package com.example.nutri_capture_new
+package com.example.swemo
 
 import org.junit.Test
 

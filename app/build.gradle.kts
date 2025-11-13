@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.nutri_capture_new"
+    namespace = "com.example.swemo"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.nutri_capture_new"
+        applicationId = "com.example.swemo"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

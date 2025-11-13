@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "nutri-capture-new"
+rootProject.name = "swemo"
 include(":app")
 include(":database")
 include(":designsystem")
